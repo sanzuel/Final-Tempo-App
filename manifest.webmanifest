@@ -1,0 +1,48 @@
+{
+  "id": "/",
+  "name": "Drummer Pro Songs BPM",
+  "short_name": "Drummer Pro",
+  "description": "Drummer Pro Songs BPM by Drumwell - Song Library with BPM, Setlists with drag reorder, and Drumwell Metronome with 50% boosted click for live gigs. Save songs, organize setlists, and play metronome by tapping the BPM number.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A1128",
+  "theme_color": "#0A1128",
+  "categories": [
+    "music",
+    "entertainment",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Drummer Pro Songs BPM"
+    }
+  ]
+}

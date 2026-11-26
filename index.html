@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-visual">
+<title>Drummer Pro Songs BPM</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0A1128"><meta name="description" content="Drummer Pro Songs BPM by Drumwell - Song Library with BPM, Setlists with drag reorder, and Drumwell Metronome with 50% boosted click for live gigs.">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#0A1128;color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overscroll-behavior:none;overflow:hidden;position:fixed;inset:0;padding-top:env(safe-area-inset-top,0px)}
+header{padding:calc(env(safe-area-inset-top,0px) + 28px) 20px 0 20px;text-align:left}
+h1{margin:0;font-size:22px;letter-spacing:.12em} h1 span{color:#5eead4}
+.sub{font-size:11px;letter-spacing:.22em;opacity:.75;margin-top:2px}
+.brand{font-size:13px;margin:6px 20px 0;color:#5eead4}
+.tabs{display:flex;gap:8px;margin:8px 20px 8px} .tabs button{flex:1;padding:10px;border-radius:999px;border:1px solid #1e2a4a;background:#111a33;color:#fff} .tabs button.on{background:#5eead4;color:#0A1128;font-weight:800}
+.search{margin:0 20px 8px} .search input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #1e2a4a;background:#111a33;color:#fff;font-size:15px}
+.count{font-size:10px;opacity:.7;margin:0 20px 6px}
+.list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 20px 120px}
+.row{display:flex;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid #16213f;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y;position:relative}
+.row .info{flex:1;min-width:0} .title{font-size:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .artist{font-size:12px;opacity:.7;margin-top:2px}
+.bpm{text-align:right;min-width:64px} .bpm .num{font-size:20px;font-weight:800;color:#5eead4} .bpm .lbl{font-size:10px;opacity:.7}
+.dots{font-size:22px;padding:6px 4px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.dots.dragging{background:#0f2a2a;border:1px solid #5eead4;border-radius:8px}
+.menu{position:absolute;right:8px;top:52px;background:#1a2342;border:1px solid #2a3a65;border-radius:12px;z-index:99;min-width:140px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.menu button{display:block;width:100%;text-align:left;background:transparent;color:#fff;border:0;padding:13px 14px;font-size:15px}
+.menu button:active{background:#2a3a65}
+.topbtn{position:fixed;right:16px;top:calc(env(safe-area-inset-top,0px) + 28px);background:#5eead4;color:#0A1128;border:0;border-radius:999px;padding:10px 14px;font-weight:800;z-index:20}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#0f1730;border-top:2px solid #5eead4;border-radius:18px 18px 0 0;padding:16px 20px 22px;z-index:9999;max-height:85dvh;overflow-y:auto;transform:translateY(100%);transition:transform .22s ease-out}
+.sheet.open{transform:translateY(0)} .sheet h2{margin:0 0 12px} .sheet input{width:100%;padding:13px;border-radius:12px;border:1px solid #1e2a4a;background:#111a33;color:#fff;margin-bottom:10px;font-size:16px} .sheet button{width:100%;padding:14px;border:0;border-radius:12px;background:#5eead4;font-weight:900;font-size:16px}
+.metro{position:fixed;left:0;right:0;bottom:0;background:#0f1730;border-top:1px solid #1e2a4a;padding:12px 20px 16px;z-index:30;display:none}
+.metro.show{display:block} .metro .row2{display:flex;justify-content:space-between;align-items:center} .metro button{background:#1e2a4a;color:#fff;border:0;padding:10px 14px;border-radius:999px} .metro .play{background:#5eead4;color:#0A1128;font-weight:900}
+</style></head>
+<body>
+<header><h1>DRUMMER <span>PRO</span></h1><div class="sub">SONGS BPM</div></header>
+<div class="brand">Drumwell</div>
+<div class="tabs"><button id="tabSongs" class="on" onclick="show('songs')">Song Library</button><button id="tabSets" onclick="show('sets')">Setlists</button></div>
+<div class="search"><input id="q" placeholder="Search songs..." oninput="render()"></div>
+<div class="count" id="count"></div>
+<div class="list" id="list"></div>
+<button class="topbtn" onclick="openSheet('song')">+ Add Song</button>
+<div class="sheet" id="sheet"><h2 id="sheetTitle">Add Song</h2><input id="fTitle" placeholder="TITLE"><input id="fArtist" placeholder="ARTIST"><input id="fBpm" placeholder="BPM" type="number" inputmode="numeric"><button onclick="saveSong()">Save Song</button><button onclick="closeSheet()" style="background:#1e2a4a;color:#fff;margin-top:8px">Cancel</button></div>
+<div class="metro" id="metro"><div class="row2"><span>DRUMWELL METRONOME</span><span id="metroBpm">120 BPM</span></div><div class="row2" style="margin-top:10px"><button onclick="prevSong()">Prev</button><button class="play" id="playBtn" onclick="togglePlay()">Play</button><button onclick="nextSong()">Next</button></div><div style="margin-top:10px">Volume <input type="range" id="vol" value="100" min="0" max="100" style="width:100%"></div></div>
+<script>
+let songs=JSON.parse(localStorage.getItem('dp_songs')||'null')||[
+{name:"Bad Name",artist:"Bon Jovi",bpm:125},{name:"Change the World",artist:"Eric Clapton",bpm:101},{name:"Drive",artist:"Incubus",bpm:91},{name:"Entersandman",artist:"Metallica",bpm:126},{name:"Hotel California",artist:"Eagles",bpm:145},{name:"Piano in the Dark",artist:"Brenda Russell",bpm:100},{name:"Shut Up And Dance",artist:"Walk The Moon",bpm:128},{name:"Stiches and Burn",artist:"",bpm:115},{name:"Sweet Child O'Mine",artist:"Guns N Roses",bpm:126},{name:"Zombie",artist:"The Cranberries",bpm:128},{name:"Dreams",artist:"Fleetwood Mac",bpm:120}];
+let sets=JSON.parse(localStorage.getItem('dp_sets')||'null')||[{name:"Set A",ids:[0,1,2,3,4,5,6]},{name:"Set B",ids:[3,4]},{name:"Set C",ids:[5,6,7]}];
+let view='songs', curSet=0, editIdx=-1, audioCtx=null, timer=null, playing=false, beat=0, curIdx=0, openMenuEl=null;
+function save(){localStorage.setItem('dp_songs',JSON.stringify(songs));localStorage.setItem('dp_sets',JSON.stringify(sets));}
+function show(v){view=v;closeMenu();document.getElementById('tabSongs').className=v=='songs'?'on':'';document.getElementById('tabSets').className=v=='sets'?'on':'';render();}
+function closeMenu(){if(openMenuEl) openMenuEl.remove(); openMenuEl=null;}
+document.addEventListener('click',e=>{if(openMenuEl && !openMenuEl.contains(e.target) && !e.target.classList.contains('dots')) closeMenu();});
+function render(){
+ let q=(document.getElementById('q').value||'').toLowerCase();
+ let el=document.getElementById('list'); el.innerHTML=''; closeMenu();
+ if(view=='songs'){
+  let f=songs.filter(s=>(s.name+' '+s.artist).toLowerCase().includes(q));
+  document.getElementById('count').textContent=f.length+' SONGS';
+  f.forEach((s,i)=>{let idx=songs.indexOf(s);let d=document.createElement('div');d.className='row';d.innerHTML=`<div class="info"><div class="title">${s.name}</div><div class="artist">${s.artist||''}</div></div><div class="bpm"><div class="num">${s.bpm}</div><div class="lbl">BPM</div></div><div class="dots">⋮</div>`;
+   d.querySelector('.bpm .num').onclick=(e)=>{e.stopPropagation(); playSong(idx);};
+   d.querySelector('.dots').onclick=(e)=>{e.stopPropagation(); openSongMenu(d,idx);};
+   el.appendChild(d);});
+ } else if(view=='sets'){
+  document.getElementById('count').textContent=sets.length+' SETLISTS';
+  sets.forEach((st,i)=>{let d=document.createElement('div');d.className='row';d.innerHTML=`<div class="info"><div class="title">${st.name}</div><div class="artist">${st.ids.length} songs</div></div><div class="dots">›</div>`;d.onclick=()=>openSet(i);el.appendChild(d);});
+ }
+}
+function openSongMenu(row,idx){
+ closeMenu();
+ let m=document.createElement('div'); m.className='menu';
+ let b1=document.createElement('button'); b1.textContent='Edit';
+ b1.onclick=(e)=>{e.stopPropagation(); closeMenu(); openEdit(idx);};
+ let b2=document.createElement('button'); b2.textContent='Remove';
+ b2.onclick=(e)=>{e.stopPropagation(); closeMenu(); if(confirm('Remove "'+songs[idx].name+'" ?')){songs.splice(idx,1); save(); render();}};
+ m.appendChild(b1); m.appendChild(b2); row.appendChild(m); openMenuEl=m;
+}
+function openSet(i){curSet=i;view='detail';closeMenu();let st=sets[i];let el=document.getElementById('list');document.getElementById('count').textContent=st.ids.length+' songs';el.innerHTML='';
+ st.ids.forEach((sid,pos)=>{let s=songs[sid];if(!s)return;let d=document.createElement('div');d.className='row';
+  d.innerHTML=`<div class="info"><div class="title">${s.name}</div><div class="artist">${s.artist||''}</div></div><div class="bpm"><div class="num">${s.bpm}</div><div class="lbl">BPM</div></div><div class="dots">⋮</div>`;
+  d.querySelector('.bpm .num').onclick=(e)=>{e.stopPropagation(); playSong(sid);};
+  let dots=d.querySelector('.dots'); let pressTimer=null, longPressed=false;
+  dots.addEventListener('touchstart',e=>{longPressed=false; pressTimer=setTimeout(()=>{longPressed=true; dots.classList.add('dragging'); if(navigator.vibrate) navigator.vibrate(20);},600);},{passive:true});
+  dots.addEventListener('touchend',e=>{clearTimeout(pressTimer); if(longPressed){dots.classList.remove('dragging'); return;} openSetMenu(d,pos);});
+  dots.addEventListener('click',e=>{if(e.detail===0) return; openSetMenu(d,pos);});
+  el.appendChild(d);});
+ document.getElementById('tabSets').className='on';document.getElementById('tabSongs').className='';
+}
+function openSetMenu(row,pos){
+ closeMenu();
+ let m=document.createElement('div'); m.className='menu';
+ let b=document.createElement('button'); b.textContent='Remove';
+ b.onclick=(e)=>{e.stopPropagation(); closeMenu(); sets[curSet].ids.splice(pos,1); save(); openSet(curSet);};
+ m.appendChild(b); row.appendChild(m); openMenuEl=m;
+}
+function openSheet(kind){editIdx=-1;document.getElementById('sheetTitle').textContent='Add Song';document.getElementById('fTitle').value='';document.getElementById('fArtist').value='';document.getElementById('fBpm').value='';document.getElementById('sheet').classList.add('open');}
+function openEdit(idx){editIdx=idx;document.getElementById('sheetTitle').textContent='Edit Song';document.getElementById('fTitle').value=songs[idx].name;document.getElementById('fArtist').value=songs[idx].artist;document.getElementById('fBpm').value=songs[idx].bpm;document.getElementById('sheet').classList.add('open');}
+function closeSheet(){document.getElementById('sheet').classList.remove('open');}
+function saveSong(){let t=document.getElementById('fTitle').value.trim(),a=document.getElementById('fArtist').value.trim(),b=parseInt(document.getElementById('fBpm').value||'120');if(!t)return alert('Enter title'); if(editIdx>=0){songs[editIdx]={name:t,artist:a,bpm:b};} else {songs.push({name:t,artist:a,bpm:b});} songs.sort((x,y)=>x.name.localeCompare(y.name));save();closeSheet();render();}
+function playSong(i){curIdx=i;document.getElementById('metro').classList.add('show');document.getElementById('metroBpm').textContent=songs[i].bpm+' BPM';startMetro();}
+function startMetro(){stopMetro();playing=true;document.getElementById('playBtn').textContent='Stop';let bpm=songs[curIdx].bpm;let interval=60000/bpm;beat=0;timer=setInterval(()=>{click(beat==0);beat=(beat+1)%4;},interval);click(true);}
+function stopMetro(){if(timer)clearInterval(timer);playing=false;document.getElementById('playBtn').textContent='Play';}
+function togglePlay(){playing?stopMetro():startMetro();}
+function click(accent){try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain(),c=audioCtx.createDynamicsCompressor();let vol=(document.getElementById('vol').value/100)*1.5; g.gain.value=Math.min(1,vol*(accent?1:0.6));o.frequency.value=accent?1800:1200;o.connect(g);g.connect(c);c.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+0.05);}catch(e){}}
+function prevSong(){curIdx=(curIdx-1+songs.length)%songs.length;playSong(curIdx);} function nextSong(){curIdx=(curIdx+1)%songs.length;playSong(curIdx);}
+let sx=0,sy=0,swiping=false;
+document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;swiping=false;},{passive:true});
+document.addEventListener('touchmove',e=>{let dx=e.touches[0].clientX-sx,dy=e.touches[0].clientY-sy;if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){swiping=true;}}, {passive:true});
+document.addEventListener('touchend',e=>{if(!swiping)return;let dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>90){if(dx<0&&view=='songs')show('sets');else if(dx>0&&view=='sets')show('songs');else if(dx>0&&view=='detail')show('sets');}}, {passive:true});
+render();
+</script></body></html>
