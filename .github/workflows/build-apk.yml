@@ -15,6 +15,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Setup Gradle 8.7
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
       - name: Create OFFLINE WebView App
         run: |
           mkdir -p app/src/main/java/com/drumwell/drummerpro
@@ -23,13 +27,84 @@ jobs:
           cp manifest.webmanifest app/src/main/assets/manifest.webmanifest || true
           cp icon-192.png app/src/main/assets/icon-192.png || true
           cp icon-512.png app/src/main/assets/icon-512.png || true
-          printf "include ':app'\n" > settings.gradle
-          printf "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.5.2' } }\nallprojects { repositories { google(); mavenCentral() } }\n" > build.gradle
-          printf "apply plugin: 'com.android.application'\nandroid { namespace 'com.drumwell.drummerpro'; compileSdk 34; defaultConfig { applicationId 'com.drumwell.drummerpro'; minSdk 24; targetSdk 34; versionCode 1; versionName '1.0' } buildTypes { release { minifyEnabled false } } compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 } }\n" > app/build.gradle
-          printf "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"><application android:label=\"Drummer Pro\" android:theme=\"@android:style/Theme.NoTitleBar.Fullscreen\"><activity android:name=\".MainActivity\" android:exported=\"true\"><intent-filter><action android:name=\"android.intent.action.MAIN\"/><category android:name=\"android.intent.category.LAUNCHER\"/></intent-filter></activity></application></manifest>\n" > app/src/main/AndroidManifest.xml
-          printf "package com.drumwell.drummerpro; import android.app.Activity; import android.os.Bundle; import android.webkit.WebView; import android.webkit.WebSettings; public class MainActivity extends Activity { protected void onCreate(Bundle b) { super.onCreate(b); WebView w = new WebView(this); WebSettings s = w.getSettings(); s.setJavaScriptEnabled(true); s.setDomStorageEnabled(true); s.setAllowFileAccess(true); w.loadUrl(\"file:///android_asset/index.html\"); setContentView(w); } }\n" > app/src/main/java/com/drumwell/drummerpro/MainActivity.java
+          cat > settings.gradle <<'EOF'
+          pluginManagement {
+            repositories {
+              google()
+              mavenCentral()
+              gradlePluginPortal()
+            }
+          }
+          dependencyResolutionManagement {
+            repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+            repositories {
+              google()
+              mavenCentral()
+            }
+          }
+          rootProject.name = "DrummerPro"
+          include ':app'
+          EOF
+          cat > build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application' version '8.5.2' apply false
+          }
+          EOF
+          cat > app/build.gradle <<'EOF'
+          plugins {
+            id 'com.android.application'
+          }
+          android {
+            namespace 'com.drumwell.drummerpro'
+            compileSdk 34
+            defaultConfig {
+              applicationId 'com.drumwell.drummerpro'
+              minSdk 24
+              targetSdk 34
+              versionCode 1
+              versionName '1.0'
+            }
+            buildTypes {
+              release {
+                minifyEnabled false
+              }
+            }
+            compileOptions {
+              sourceCompatibility JavaVersion.VERSION_17
+              targetCompatibility JavaVersion.VERSION_17
+            }
+          }
+          EOF
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:label="Drummer Pro" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity></application></manifest>
+          EOF
+          cat > app/src/main/java/com/drumwell/drummerpro/MainActivity.java <<'EOF'
+          package com.drumwell.drummerpro;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebView;
+          import android.webkit.WebSettings;
+          public class MainActivity extends Activity {
+            protected void onCreate(Bundle b) {
+              super.onCreate(b);
+              WebView w = new WebView(this);
+              WebSettings s = w.getSettings();
+              s.setJavaScriptEnabled(true);
+              s.setDomStorageEnabled(true);
+              s.setAllowFileAccess(true);
+              w.loadUrl("file:///android_asset/index.html");
+              setContentView(w);
+            }
+          }
+          EOF
+          echo "--- settings.gradle ---"
+          cat settings.gradle
+          echo "--- build.gradle ---"
+          cat build.gradle
+          echo "--- app/build.gradle ---"
+          cat app/build.gradle
       - name: Build APK
-        run: gradle :app:assembleDebug --stacktrace
+        run: gradle :app:assembleDebug --stacktrace --no-daemon
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
