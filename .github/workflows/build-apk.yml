@@ -97,12 +97,6 @@ jobs:
             }
           }
           EOF
-          echo "--- settings.gradle ---"
-          cat settings.gradle
-          echo "--- build.gradle ---"
-          cat build.gradle
-          echo "--- app/build.gradle ---"
-          cat app/build.gradle
       - name: Build APK
         run: gradle :app:assembleDebug --stacktrace --no-daemon
       - name: Upload APK
