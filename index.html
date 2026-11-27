@@ -1895,7 +1895,38 @@ input[type=range]::-moz-range-thumb{
   }
 }
 </style>
-</head>
+<script>/* NO-SWIPE-BOUNCE FIX: block horizontal page-swipe that makes Song Library <-> Setlists slide/bounce. Vertical scroll still works. */
+(function(){
+  var sx=0, sy=0, swiping=false;
+  window.addEventListener('touchstart', function(e){
+    if(e.touches.length!==1) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; swiping=false;
+  }, {capture:true, passive:true});
+  window.addEventListener('touchmove', function(e){
+    if(e.touches.length!==1) return;
+    var dx=e.touches[0].clientX-sx, dy=e.touches[0].clientY-sy;
+    if(Math.abs(dx)>12 && Math.abs(dx)>Math.abs(dy)*1.5){
+      swiping=true;
+      try{ e.preventDefault(); }catch(_){}
+      try{ e.stopPropagation(); e.stopImmediatePropagation(); }catch(_){}
+    }
+  }, {capture:true, passive:false});
+  window.addEventListener('touchend', function(e){
+    if(swiping){ try{ e.stopPropagation(); e.stopImmediatePropagation(); }catch(_){} swiping=false; }
+  }, {capture:true, passive:false});
+  // Safety: if React still sets a horizontal translate, snap it back to 0
+  var obs=new MutationObserver(function(){
+    var els=document.querySelectorAll('[style*="translate3d"]');
+    els.forEach(function(el){
+      var s=el.getAttribute('style')||'';
+      if(/translate3d\(\s*-?\d/.test(s) && !/translate3d\(0px/.test(s)){
+        el.style.transform='translate3d(0px, 0, 0)';
+      }
+    });
+  });
+  document.addEventListener('DOMContentLoaded', function(){ obs.observe(document.body,{attributes:true,subtree:true,attributeFilter:['style']}); });
+})();
+</script></head>
 <body>
   <div id="root"></div>
   
