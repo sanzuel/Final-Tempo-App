@@ -24,11 +24,11 @@ jobs:
           mkdir -p app/src/main/java/com/drumwell/drummerpro
           mkdir -p app/src/main/assets
           mkdir -p app/src/main/res/mipmap-xxxhdpi app/src/main/res/mipmap-xxhdpi app/src/main/res/mipmap-xhdpi app/src/main/res/mipmap-hdpi app/src/main/res/mipmap-mdpi
-          cp icon-512.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-          cp icon-512.png app/src/main/res/mipmap-xxhdpi/ic_launcher.png
-          cp icon-192.png app/src/main/res/mipmap-xhdpi/ic_launcher.png
-          cp icon-192.png app/src/main/res/mipmap-hdpi/ic_launcher.png
-          cp icon-192.png app/src/main/res/mipmap-mdpi/ic_launcher.png
+          cp icon-512.png app/src/main/res/mipmap-xxxhdpi/ic_launcher.png || true
+          cp icon-512.png app/src/main/res/mipmap-xxhdpi/ic_launcher.png || true
+          cp icon-192.png app/src/main/res/mipmap-xhdpi/ic_launcher.png || true
+          cp icon-192.png app/src/main/res/mipmap-hdpi/ic_launcher.png || true
+          cp icon-192.png app/src/main/res/mipmap-mdpi/ic_launcher.png || true
           cp index.html app/src/main/assets/index.html
           cp manifest.webmanifest app/src/main/assets/manifest.webmanifest || true
           cp icon-192.png app/src/main/assets/icon-192.png || true
