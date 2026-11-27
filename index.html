@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script>
+<head><style>/* NO-SLIDE FIX: switching Song Library <-> Setlists should be instant, no horizontal bounce/slide */
+html,body{overflow-x:hidden!important;overscroll-behavior:none!important;overscroll-behavior-x:none!important}
+*{overscroll-behavior-x:none!important}
+[class*="slide"],[class*="Slide"],[class*="transition"],[class*="Transition"]{transform:none!important}
+main,div[class*="container"],div[class*="content"]{transform:none!important;transition:none!important;animation:none!important}
+</style><script>
 // OFFLINE FIX - Drummer Pro: when running as APK / file://, there is no server for fetch("actions").
 // This shim stores songs + setlists in localStorage so Save Song works offline.
 // Same UI, same metronome - only the save layer is fixed.
