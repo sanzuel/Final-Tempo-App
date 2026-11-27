@@ -84,6 +84,7 @@ jobs:
           import android.os.Bundle;
           import android.webkit.WebView;
           import android.webkit.WebSettings;
+          import android.view.View;
           public class MainActivity extends Activity {
             protected void onCreate(Bundle b) {
               super.onCreate(b);
@@ -92,6 +93,9 @@ jobs:
               s.setJavaScriptEnabled(true);
               s.setDomStorageEnabled(true);
               s.setAllowFileAccess(true);
+              w.setOverScrollMode(View.OVERSCROLL_NEVER);
+              w.setVerticalScrollBarEnabled(false);
+              w.setHorizontalScrollBarEnabled(false);
               w.loadUrl("file:///android_asset/index.html");
               setContentView(w);
             }
